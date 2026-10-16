@@ -1,0 +1,2 @@
+# Preserve the byte-for-byte upstream README used for source verification.
+blog/source/README.md whitespace=-blank-at-eol
