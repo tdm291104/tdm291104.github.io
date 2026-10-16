@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đo chất lượng AI trước khi tối ưu | mark.dev</title><meta name="description" content="Từ bộ câu hỏi chuẩn đến latency, chi phí và lỗi trong production.">
+<meta name="theme-color" content="#0a0e1a"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0e1a'/%3E%3Ctext x='7' y='24' fill='%2360a5fa' font-family='monospace' font-size='24'%3EM%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="blog.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Đến nội dung chính</a>
+<header>
+<nav aria-label="Điều hướng chính"><a class="brand" href="../index.html"><span aria-hidden="true">&gt;</span> mark.dev<span class="cursor" aria-hidden="true"></span></a>
+<div class="nav-links"><a href="../index.html">Portfolio</a><a href="index.html" aria-current="page">Blog</a><span class="language">Tiếng Việt</span>
+</div>
+</nav>
+</header>
+<main id="main">
+<div class="breadcrumb"><a href="index.html">Blog</a><span aria-hidden="true">/</span><span>Evaluation</span>
+</div>
+<div class="article-heading">
+<div class="article-meta">Evaluation · 3 câu hỏi phỏng vấn · Tiếng Việt
+</div>
+<h1>Đo chất lượng AI trước khi tối ưu
+</h1>
+<p class="intro">Từ bộ câu hỏi chuẩn đến latency, chi phí và lỗi trong production.
+</p>
+</div>
+<div class="reading-layout">
+<aside class="toc" aria-label="Mục lục">
+<p>Trong bài này
+</p>
+<ol>
+<li><a href="#question-1">Bộ evaluation hữu ích cần những gì?</a>
+</li>
+<li><a href="#question-2">Có thể giao toàn bộ việc chấm cho LLM không?</a>
+</li>
+<li><a href="#question-3">Theo dõi gì khi đưa hệ thống vào production?</a>
+</li>
+</ol><a class="source-link" href="https://github.com/amitshekhariitbhu/ai-engineering-interview-questions#evaluation-and-testing">Chủ đề trong repo gốc ↗</a>
+</aside>
+<article class="prose">
+<p class="editor-note">Bài giải thích được biên soạn cho blog này, dựa trên chủ đề câu hỏi của Amit Shekhar. Đây là tài liệu tự học, không phải bản dịch đáp án chính thức.
+</p>
+<section class="answer" id="question-1">
+<h2>Bộ evaluation hữu ích cần những gì?
+</h2>
+<p>Bắt đầu từ nhiệm vụ của người dùng: đầu vào điển hình, trường hợp khó, thiếu dữ liệu và yêu cầu ngoài phạm vi. Mỗi mẫu cần tiêu chí chấm rõ ràng. Giữ một tập test độc lập để so sánh thay đổi model, prompt và retrieval.
+</p>
+<h3>Đưa vào thực tế
+</h3>
+<p>Với trích xuất, có thể đo từng trường và tỷ lệ đúng toàn bộ bản ghi. Với câu trả lời mở, dùng rubric cho tính đúng, mức đủ và bằng chứng. Báo cáo theo nhóm lỗi; điểm trung bình cao có thể che giấu một nhóm người dùng bị phục vụ rất kém.
+</p>
+<details>
+<summary>Câu hỏi đào sâu để tự luyện
+</summary>
+<p>Một model tăng điểm trung bình nhưng sai nhiều hơn ở câu hỏi quan trọng có nên phát hành?
+</p>
+</details>
+</section>
+<section class="answer" id="question-2">
+<h2>Có thể giao toàn bộ việc chấm cho LLM không?
+</h2>
+<p>LLM-as-judge mở rộng việc chấm câu trả lời khó đối chiếu bằng exact match, nhưng có thể thiên lệch theo vị trí, độ dài và cách diễn đạt. Rubric cần cụ thể và được hiệu chỉnh với các mẫu do con người chấm.
+</p>
+<h3>Đưa vào thực tế
+</h3>
+<p>Khi so sánh cặp, đảo thứ tự để kiểm tra thiên lệch vị trí. Theo dõi độ đồng thuận với người chấm, giữ những mẫu bất đồng để xem lại và ưu tiên kiểm tra thủ công ở quyết định có tác động lớn. Không mặc định judge model là nguồn sự thật.
+</p>
+<details>
+<summary>Câu hỏi đào sâu để tự luyện
+</summary>
+<p>Bạn biết judge đang thích câu dài hơn thay vì câu đúng hơn bằng cách nào?
+</p>
+</details>
+</section>
+<section class="answer" id="question-3">
+<h2>Theo dõi gì khi đưa hệ thống vào production?
+</h2>
+<p>Theo dõi tỷ lệ hoàn thành nhiệm vụ, lỗi công cụ, độ trễ p50/p95, thời gian đến token đầu tiên, lượng token và chi phí trên tác vụ thành công. Gắn trace với phiên bản model, prompt và chỉ mục để có thể tái hiện lỗi.
+</p>
+<h3>Đưa vào thực tế
+</h3>
+<p>Log phải có giới hạn lưu trữ, phân quyền và cơ chế che dữ liệu nhạy cảm. Khi chất lượng giảm, tách thay đổi phân phối đầu vào khỏi thay đổi hệ thống. Đánh giá offline trước, rollout có giới hạn và giữ đường rollback khi thay phiên bản.
+</p>
+<details>
+<summary>Câu hỏi đào sâu để tự luyện
+</summary>
+<p>Nếu tổng chi phí giảm nhưng số tác vụ thất bại tăng, bạn sẽ dùng chỉ số nào để quyết định?
+</p>
+</details>
+</section>
+<section class="takeaway">
+<h2>Cách luyện với bài này
+</h2>
+<p>Thử trả lời mỗi câu trong 60-90 giây trước khi đọc giải thích. Sau đó nêu một ví dụ, một đánh đổi và cách kiểm chứng lựa chọn của bạn. Dùng câu hỏi đào sâu để tìm phần mình chưa giải thích được.
+</p>
+</section>
+<div class="article-source">
+<h2>Nguồn tham khảo
+</h2>
+<p>Cấu trúc chủ đề tham khảo từ <a href="https://github.com/amitshekhariitbhu/ai-engineering-interview-questions">AI Engineering Interview Questions của Amit Shekhar</a>. Các phần giải thích và tình huống trên trang được viết mới, không sao chép các bài viết được liên kết trong repo.
+</p>
+</div><a class="next-post" href="llm-fundamentals.html"><span>Đọc tiếp</span><strong>LLM hoạt động như thế nào? →</strong></a>
+</article>
+</div>
+</main>
+<footer><span>© 2026 Tu Duc Manh · mark.dev</span><a href="https://github.com/amitshekhariitbhu/ai-engineering-interview-questions">Kho câu hỏi tham khảo trên GitHub ↗</a>
+</footer>
+</body></html>

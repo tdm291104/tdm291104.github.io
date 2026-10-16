@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LLM hoạt động như thế nào? | mark.dev</title><meta name="description" content="Từ token đến attention: hiểu cơ chế trước khi bàn về model.">
+<meta name="theme-color" content="#0a0e1a"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0e1a'/%3E%3Ctext x='7' y='24' fill='%2360a5fa' font-family='monospace' font-size='24'%3EM%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="blog.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Đến nội dung chính</a>
+<header>
+<nav aria-label="Điều hướng chính"><a class="brand" href="../index.html"><span aria-hidden="true">&gt;</span> mark.dev<span class="cursor" aria-hidden="true"></span></a>
+<div class="nav-links"><a href="../index.html">Portfolio</a><a href="index.html" aria-current="page">Blog</a><span class="language">Tiếng Việt</span>
+</div>
+</nav>
+</header>
+<main id="main">
+<div class="breadcrumb"><a href="index.html">Blog</a><span aria-hidden="true">/</span><span>LLM</span>
+</div>
+<div class="article-heading">
+<div class="article-meta">LLM · 3 câu hỏi phỏng vấn · Tiếng Việt
+</div>
+<h1>LLM hoạt động như thế nào?
+</h1>
+<p class="intro">Từ token đến attention: hiểu cơ chế trước khi bàn về model.
+</p>
+</div>
+<div class="reading-layout">
+<aside class="toc" aria-label="Mục lục">
+<p>Trong bài này
+</p>
+<ol>
+<li><a href="#question-1">Token khác từ ở điểm nào?</a>
+</li>
+<li><a href="#question-2">Self-attention kết nối các token ra sao?</a>
+</li>
+<li><a href="#question-3">Temperature và top-p thay đổi câu trả lời thế nào?</a>
+</li>
+</ol><a class="source-link" href="https://github.com/amitshekhariitbhu/ai-engineering-interview-questions#llm-fundamentals">Chủ đề trong repo gốc ↗</a>
+</aside>
+<article class="prose">
+<p class="editor-note">Bài giải thích được biên soạn cho blog này, dựa trên chủ đề câu hỏi của Amit Shekhar. Đây là tài liệu tự học, không phải bản dịch đáp án chính thức.
+</p>
+<section class="answer" id="question-1">
+<h2>Token khác từ ở điểm nào?
+</h2>
+<p>Tokenizer chia văn bản thành các đơn vị mà model xử lý: có thể là một từ, một phần từ hoặc ký tự. Token được ánh xạ thành ID rồi thành vector embedding. Cùng một câu nhưng hai tokenizer khác nhau có thể tạo ra số token khác nhau.
+</p>
+<h3>Đưa vào thực tế
+</h3>
+<p>Với tiếng Việt, đừng ước lượng chi phí bằng số từ tiếng Anh. Hãy dùng đúng tokenizer của model để đo độ dài prompt, chừa ngân sách cho output và kiểm tra cả tài liệu dài lẫn câu có mã nguồn.
+</p>
+<details>
+<summary>Câu hỏi đào sâu để tự luyện
+</summary>
+<p>Vì sao cùng một tài liệu lại tốn số token khác nhau giữa các model?
+</p>
+</details>
+</section>
+<section class="answer" id="question-2">
+<h2>Self-attention kết nối các token ra sao?
+</h2>
+<p>Mỗi vị trí tạo ra query, key và value. Độ tương đồng giữa query với các key được chia cho căn bậc hai của kích thước key, rồi đi qua softmax để tạo trọng số tổng hợp các value. Nhờ vậy, biểu diễn của một token có thể lấy thông tin từ các vị trí liên quan.
+</p>
+<h3>Đưa vào thực tế
+</h3>
+<p>Trong decoder tự hồi quy, causal mask chặn việc nhìn thấy token tương lai khi huấn luyện. Nhiều attention head học các kiểu quan hệ khác nhau. Attention thông thường có chi phí bậc hai theo chiều dài chuỗi, nên tăng context không miễn phí.
+</p>
+<details>
+<summary>Câu hỏi đào sâu để tự luyện
+</summary>
+<p>Nếu bỏ causal mask khi huấn luyện model sinh văn bản, điều gì xảy ra?
+</p>
+</details>
+</section>
+<section class="answer" id="question-3">
+<h2>Temperature và top-p thay đổi câu trả lời thế nào?
+</h2>
+<p>Temperature điều chỉnh độ sắc của phân phối xác suất trước khi lấy mẫu: giá trị thấp tập trung vào token có xác suất cao; giá trị cao làm phân phối phẳng hơn. Top-p giữ tập token nhỏ nhất có tổng xác suất đạt ngưỡng p, sau đó lấy mẫu trong tập đó.
+</p>
+<h3>Đưa vào thực tế
+</h3>
+<p>Với trích xuất dữ liệu, thường bắt đầu bằng cấu hình ít ngẫu nhiên rồi đo độ chính xác. Với viết sáng tạo, có thể tăng độ đa dạng. Temperature thấp không bảo đảm câu trả lời đúng, và khả năng tái lập còn phụ thuộc backend phục vụ model.
+</p>
+<details>
+<summary>Câu hỏi đào sâu để tự luyện
+</summary>
+<p>Tại sao đặt temperature thấp vẫn không ngăn được hallucination?
+</p>
+</details>
+</section>
+<section class="takeaway">
+<h2>Cách luyện với bài này
+</h2>
+<p>Thử trả lời mỗi câu trong 60-90 giây trước khi đọc giải thích. Sau đó nêu một ví dụ, một đánh đổi và cách kiểm chứng lựa chọn của bạn. Dùng câu hỏi đào sâu để tìm phần mình chưa giải thích được.
+</p>
+</section>
+<div class="article-source">
+<h2>Nguồn tham khảo
+</h2>
+<p>Cấu trúc chủ đề tham khảo từ <a href="https://github.com/amitshekhariitbhu/ai-engineering-interview-questions">AI Engineering Interview Questions của Amit Shekhar</a>. Các phần giải thích và tình huống trên trang được viết mới, không sao chép các bài viết được liên kết trong repo.
+</p>
+</div><a class="next-post" href="prompt-engineering.html"><span>Đọc tiếp</span><strong>Prompt tốt là một hợp đồng rõ ràng →</strong></a>
+</article>
+</div>
+</main>
+<footer><span>© 2026 Tu Duc Manh · mark.dev</span><a href="https://github.com/amitshekhariitbhu/ai-engineering-interview-questions">Kho câu hỏi tham khảo trên GitHub ↗</a>
+</footer>
+</body></html>

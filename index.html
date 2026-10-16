@@ -11,6 +11,7 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { background: #0a0e1a; }
+    html { overflow-x: clip; }
     body { -webkit-font-smoothing: antialiased; color: #c7d2e4; font-family: 'Noto Sans JP', 'Helvetica Neue', Helvetica, sans-serif; overflow-x: hidden; }
     a { color: #60a5fa; text-decoration: none; }
     a:hover { color: #93c5fd; }
@@ -112,7 +113,7 @@
     .lang-opt.active .dot { background: #3b82f6; box-shadow: 0 0 6px #3b82f6; }
 
     /* Mobile nav */
-    @media (max-width: 800px) {
+    @media (max-width: 1050px) {
       .nav-links {
         display: none;
         position: absolute; top: 100%; left: 0; right: 0;
@@ -221,6 +222,14 @@
     .pico { position: relative; width: 25px; height: 25px; display: inline-block; flex-shrink: 0; }
     .pico span { position: absolute; width: 5px; height: 5px; }
 
+    /* Interview question bank preview */
+    .blog-note { color: #93a6c4; }
+    .blog-intro { max-width: 70ch; margin-bottom: 22px; }
+    .blog-entry { margin-bottom: 28px; }
+    .blog-count { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #93a6c4; }
+    .blog-topic-link { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #60a5fa; }
+    #blog a:focus-visible { outline: 2px solid #93c5fd; outline-offset: 5px; }
+
     /* Skills */
     .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 20px; }
     .skill-card { padding: 24px; border: 1px solid rgba(59,130,246,.16); border-radius: 8px; background: rgba(14,20,36,.72); }
@@ -320,6 +329,7 @@
         <a href="#about"      data-t="navAbout"></a>
         <a href="#experience" data-t="navExp"></a>
         <a href="#projects"   data-t="navProjects"></a>
+        <a href="#blog" data-t="navBlog"></a>
         <a href="#skills"     data-t="navSkills"></a>
         <a href="#education"  data-t="navEdu"></a>
         <a href="#contact"    data-t="navContact"></a>
@@ -530,6 +540,22 @@
       </div>
     </section>
 
+    <section id="blog" class="section" aria-labelledby="blog-title" data-reveal>
+      <div class="projects-header"><h2 id="blog-title" data-t="blogTitle"></h2><span class="projects-note blog-note" data-t="blogNote"></span></div>
+      <p class="tagline blog-intro" data-t="blogIntro"></p>
+      <a class="cta-primary blog-entry" href="blog/index.html" data-blog-link="" data-t="blogAll"></a>
+      <div class="projects-grid">
+        <a class="project-card" href="blog/index.html#retrieval-augmented-generation-rag" data-blog-link="#retrieval-augmented-generation-rag">
+          <div class="project-card-header"><span class="tag">RAG</span><span class="blog-count" data-t="blogRagCount"></span></div>
+          <h3 data-t="blogRag"></h3><p class="project-desc" data-t="blogRagDesc"></p><span class="blog-topic-link" data-t="blogPractice"></span>
+        </a>
+        <a class="project-card" href="blog/index.html#ai-agents-and-agentic-systems" data-blog-link="#ai-agents-and-agentic-systems">
+          <div class="project-card-header"><span class="tag">Agents</span><span class="blog-count" data-t="blogAgentsCount"></span></div>
+          <h3 data-t="blogAgents"></h3><p class="project-desc" data-t="blogAgentsDesc"></p><span class="blog-topic-link" data-t="blogPractice"></span>
+        </a>
+      </div>
+    </section>
+
     <section id="skills" class="section" data-reveal>
       <h2 data-t="skillsTitle"></h2>
       <div class="skills-grid">
@@ -708,6 +734,18 @@
     // ── Translations ──
     const T = {
       en: {
+        navBlog:"Blog",
+        blogTitle:"AI Interview Q&A",
+        blogNote:"566 questions · 15 topics",
+        blogIntro:"Prepare for AI engineering interviews with concise answers you can explain in your own words. Explore all 15 topics in English, Japanese or Vietnamese, from LLM fundamentals to production systems.",
+        blogRag:"Retrieval-Augmented Generation",
+        blogRagDesc:"Chunking, hybrid search, reranking and grounded answers. Practise pipeline design and debugging real retrieval failures.",
+        blogRagCount:"42 questions",
+        blogAgents:"AI Agents & Agentic Systems",
+        blogAgentsDesc:"Tool calling, memory, orchestration and guardrails. Explain how agents work and how to keep them reliable.",
+        blogAgentsCount:"54 questions",
+        blogPractice:"Practise this topic →",
+        blogAll:"Explore all 566 questions →",
         navAbout:'About', navExp:'Experience', navProjects:'Projects', navSkills:'Skills', navContact:'Contact', navEdu:'Education',
         status: 'available for new opportunities',
         role: 'AI Engineer',
@@ -746,6 +784,18 @@
         fError:'Please fill in all fields.',
       },
       vi: {
+        navBlog:"Blog",
+        blogTitle:"Hỏi đáp phỏng vấn AI",
+        blogNote:"566 câu hỏi · 15 chủ đề",
+        blogIntro:"Ôn phỏng vấn AI Engineer với đáp án ngắn, tập trung vào bản chất để bạn tự giải thích được. Học đủ 15 chủ đề bằng tiếng Việt, tiếng Anh hoặc tiếng Nhật, từ nền tảng LLM đến hệ thống production.",
+        blogRag:"Retrieval-Augmented Generation",
+        blogRagDesc:"Chunking, hybrid search, reranking và câu trả lời có căn cứ. Luyện thiết kế pipeline và phân tích lỗi truy hồi thực tế.",
+        blogRagCount:"42 câu hỏi",
+        blogAgents:"AI Agents & hệ thống Agentic",
+        blogAgentsDesc:"Tool calling, bộ nhớ, điều phối và guardrail. Hiểu cách agent hoạt động và giữ hệ thống đáng tin cậy.",
+        blogAgentsCount:"54 câu hỏi",
+        blogPractice:"Luyện chủ đề này →",
+        blogAll:"Khám phá toàn bộ 566 câu hỏi →",
         navAbout:'Giới thiệu', navExp:'Kinh nghiệm', navProjects:'Dự án', navSkills:'Kỹ năng', navContact:'Liên hệ', navEdu:'Học vấn',
         status: 'đang mở cơ hội mới',
         role: 'AI Engineer',
@@ -784,6 +834,18 @@
         fError:'Vui lòng điền đầy đủ thông tin.',
       },
       jp: {
+        navBlog:"ブログ",
+        blogTitle:"AI面接Q&A",
+        blogNote:"566問 · 15分野",
+        blogIntro:"要点を絞った回答で、AIエンジニア面接に備えましょう。LLMの基礎から本番システムまで全15分野を日本語・英語・ベトナム語で学び、自分の言葉で説明する練習ができます。",
+        blogRag:"検索拡張生成（RAG）",
+        blogRagDesc:"チャンク分割、ハイブリッド検索、リランキング、根拠に基づく回答。パイプライン設計と検索の不具合への対処を学びます。",
+        blogRagCount:"42問",
+        blogAgents:"AIエージェントとそのシステム",
+        blogAgentsDesc:"ツール呼び出し、メモリ、オーケストレーション、ガードレール。エージェントの仕組みと信頼性を高める方法を学びます。",
+        blogAgentsCount:"54問",
+        blogPractice:"この分野を練習する →",
+        blogAll:"全566問を見る →",
         navAbout:'概要', navExp:'経歴', navProjects:'プロジェクト', navSkills:'スキル', navContact:'連絡', navEdu:'学歴',
         status: '新しい機会を探しています',
         role: 'AI エンジニア',
@@ -833,6 +895,10 @@
       document.querySelectorAll('[data-t]').forEach(el => {
         const key = el.getAttribute('data-t');
         if (key in t) el.textContent = t[key];
+      });
+      const blogPage = 'blog/' + ({ en: 'en.html', vi: 'index.html', jp: 'ja.html' })[lang];
+      document.querySelectorAll('#blog [data-blog-link]').forEach(link => {
+        link.href = blogPage + link.dataset.blogLink;
       });
       updateDropdownUI(lang);
       try { localStorage.setItem('mark.portfolio.lang', lang); } catch (e) {}

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG: từ tài liệu đến câu trả lời có nguồn | mark.dev</title><meta name="description" content="Thiết kế retrieval, chunking và cách tìm đúng chỗ khi hệ thống trả lời sai.">
+<meta name="theme-color" content="#0a0e1a"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0e1a'/%3E%3Ctext x='7' y='24' fill='%2360a5fa' font-family='monospace' font-size='24'%3EM%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="blog.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Đến nội dung chính</a>
+<header>
+<nav aria-label="Điều hướng chính"><a class="brand" href="../index.html"><span aria-hidden="true">&gt;</span> mark.dev<span class="cursor" aria-hidden="true"></span></a>
+<div class="nav-links"><a href="../index.html">Portfolio</a><a href="index.html" aria-current="page">Blog</a><span class="language">Tiếng Việt</span>
+</div>
+</nav>
+</header>
+<main id="main">
+<div class="breadcrumb"><a href="index.html">Blog</a><span aria-hidden="true">/</span><span>RAG</span>
+</div>
+<div class="article-heading">
+<div class="article-meta">RAG · 3 câu hỏi phỏng vấn · Tiếng Việt
+</div>
+<h1>RAG: từ tài liệu đến câu trả lời có nguồn
+</h1>
+<p class="intro">Thiết kế retrieval, chunking và cách tìm đúng chỗ khi hệ thống trả lời sai.
+</p>
+</div>
+<div class="reading-layout">
+<aside class="toc" aria-label="Mục lục">
+<p>Trong bài này
+</p>
+<ol>
+<li><a href="#question-1">Một pipeline RAG cần những gì?</a>
+</li>
+<li><a href="#question-2">Chọn chunk size như thế nào?</a>
+</li>
+<li><a href="#question-3">Có context đúng nhưng vẫn hallucinate thì sửa ở đâu?</a>
+</li>
+</ol><a class="source-link" href="https://github.com/amitshekhariitbhu/ai-engineering-interview-questions#retrieval-augmented-generation-rag">Chủ đề trong repo gốc ↗</a>
+</aside>
+<article class="prose">
+<p class="editor-note">Bài giải thích được biên soạn cho blog này, dựa trên chủ đề câu hỏi của Amit Shekhar. Đây là tài liệu tự học, không phải bản dịch đáp án chính thức.
+</p>
+<section class="answer" id="question-1">
+<h2>Một pipeline RAG cần những gì?
+</h2>
+<p>Ở bước lập chỉ mục, hệ thống phân tích tài liệu, chia đoạn, tạo embedding và lưu cùng metadata. Khi có câu hỏi, hệ thống tìm các đoạn liên quan, có thể xếp hạng lại, rồi đưa bằng chứng vào context để model soạn câu trả lời.
+</p>
+<h3>Đưa vào thực tế
+</h3>
+<p>Lưu ID tài liệu, phiên bản, vị trí đoạn và quyền truy cập ngay từ đầu. Lọc quyền trong quá trình truy hồi, trước khi nội dung vào context. Câu trả lời cần dẫn đến đoạn thực sự hỗ trợ kết luận và có thể từ chối nếu bằng chứng không đủ.
+</p>
+<details>
+<summary>Câu hỏi đào sâu để tự luyện
+</summary>
+<p>Làm thế nào để người dùng A không nhận được tài liệu riêng của người dùng B?
+</p>
+</details>
+</section>
+<section class="answer" id="question-2">
+<h2>Chọn chunk size như thế nào?
+</h2>
+<p>Chunk quá nhỏ dễ mất ngữ cảnh; chunk quá lớn chứa nhiều nhiễu và chiếm ngân sách context. Hãy chia theo cấu trúc tài liệu khi có thể: tiêu đề, đoạn văn, mục hoặc bảng. Overlap giúp giữ phần chuyển tiếp nhưng có thể tạo kết quả trùng.
+</p>
+<h3>Đưa vào thực tế
+</h3>
+<p>Không có kích thước tối ưu chung cho mọi kho dữ liệu. So sánh vài cấu hình trên câu hỏi thật, đo retrieval recall và chất lượng câu trả lời. Với bảng, giữ tiêu đề cột và đơn vị; với đoạn nhỏ, cân nhắc lấy thêm vùng cha để phục hồi ngữ cảnh.
+</p>
+<details>
+<summary>Câu hỏi đào sâu để tự luyện
+</summary>
+<p>Bạn sẽ kiểm chứng chunk mới tốt hơn bằng chỉ số nào?
+</p>
+</details>
+</section>
+<section class="answer" id="question-3">
+<h2>Có context đúng nhưng vẫn hallucinate thì sửa ở đâu?
+</h2>
+<p>Tách lỗi retrieval khỏi lỗi generation. Kiểm tra đoạn cần thiết có được tìm thấy, có lọt vào context cuối cùng và có đủ thông tin để trả lời hay không. Sau đó xem model có bỏ qua bằng chứng, kết hợp sai nguồn hay suy diễn vượt quá dữ kiện.
+</p>
+<h3>Đưa vào thực tế
+</h3>
+<p>Thử giảm đoạn nhiễu, xếp hạng lại, yêu cầu trích nguồn và đặt quy tắc từ chối khi thiếu bằng chứng. Kiểm tra từng mệnh đề quan trọng so với nguồn. Thêm tài liệu hoặc tăng top-k một cách mù quáng có thể làm câu trả lời tệ hơn.
+</p>
+<details>
+<summary>Câu hỏi đào sâu để tự luyện
+</summary>
+<p>Bạn phân biệt lỗi tìm kiếm với lỗi tổng hợp câu trả lời bằng cách nào?
+</p>
+</details>
+</section>
+<section class="takeaway">
+<h2>Cách luyện với bài này
+</h2>
+<p>Thử trả lời mỗi câu trong 60-90 giây trước khi đọc giải thích. Sau đó nêu một ví dụ, một đánh đổi và cách kiểm chứng lựa chọn của bạn. Dùng câu hỏi đào sâu để tìm phần mình chưa giải thích được.
+</p>
+</section>
+<div class="article-source">
+<h2>Nguồn tham khảo
+</h2>
+<p>Cấu trúc chủ đề tham khảo từ <a href="https://github.com/amitshekhariitbhu/ai-engineering-interview-questions">AI Engineering Interview Questions của Amit Shekhar</a>. Các phần giải thích và tình huống trên trang được viết mới, không sao chép các bài viết được liên kết trong repo.
+</p>
+</div><a class="next-post" href="ai-agents.html"><span>Đọc tiếp</span><strong>Agent cần nhiều hơn một vòng gọi LLM →</strong></a>
+</article>
+</div>
+</main>
+<footer><span>© 2026 Tu Duc Manh · mark.dev</span><a href="https://github.com/amitshekhariitbhu/ai-engineering-interview-questions">Kho câu hỏi tham khảo trên GitHub ↗</a>
+</footer>
+</body></html>

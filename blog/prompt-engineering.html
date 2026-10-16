@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompt tốt là một hợp đồng rõ ràng | mark.dev</title><meta name="description" content="Thiết kế chỉ dẫn, dữ liệu đầu vào và đầu ra có thể kiểm chứng.">
+<meta name="theme-color" content="#0a0e1a"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0e1a'/%3E%3Ctext x='7' y='24' fill='%2360a5fa' font-family='monospace' font-size='24'%3EM%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="blog.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Đến nội dung chính</a>
+<header>
+<nav aria-label="Điều hướng chính"><a class="brand" href="../index.html"><span aria-hidden="true">&gt;</span> mark.dev<span class="cursor" aria-hidden="true"></span></a>
+<div class="nav-links"><a href="../index.html">Portfolio</a><a href="index.html" aria-current="page">Blog</a><span class="language">Tiếng Việt</span>
+</div>
+</nav>
+</header>
+<main id="main">
+<div class="breadcrumb"><a href="index.html">Blog</a><span aria-hidden="true">/</span><span>Prompting</span>
+</div>
+<div class="article-heading">
+<div class="article-meta">Prompting · 3 câu hỏi phỏng vấn · Tiếng Việt
+</div>
+<h1>Prompt tốt là một hợp đồng rõ ràng
+</h1>
+<p class="intro">Thiết kế chỉ dẫn, dữ liệu đầu vào và đầu ra có thể kiểm chứng.
+</p>
+</div>
+<div class="reading-layout">
+<aside class="toc" aria-label="Mục lục">
+<p>Trong bài này
+</p>
+<ol>
+<li><a href="#question-1">Khi nào dùng zero-shot và few-shot?</a>
+</li>
+<li><a href="#question-2">Làm sao nhận JSON đáng tin cậy?</a>
+</li>
+<li><a href="#question-3">Vì sao prompt injection không thể chỉ sửa bằng câu chữ?</a>
+</li>
+</ol><a class="source-link" href="https://github.com/amitshekhariitbhu/ai-engineering-interview-questions#prompt-engineering">Chủ đề trong repo gốc ↗</a>
+</aside>
+<article class="prose">
+<p class="editor-note">Bài giải thích được biên soạn cho blog này, dựa trên chủ đề câu hỏi của Amit Shekhar. Đây là tài liệu tự học, không phải bản dịch đáp án chính thức.
+</p>
+<section class="answer" id="question-1">
+<h2>Khi nào dùng zero-shot và few-shot?
+</h2>
+<p>Zero-shot mô tả nhiệm vụ mà không đưa ví dụ. Few-shot bổ sung một vài cặp đầu vào và đầu ra mẫu để làm rõ tiêu chí hoặc định dạng. Ví dụ nên bao phủ trường hợp dễ nhầm, thay vì lặp nhiều lần cùng một mẫu đơn giản.
+</p>
+<h3>Đưa vào thực tế
+</h3>
+<p>Với phân loại ticket, nêu định nghĩa từng nhãn, đưa ví dụ ở ranh giới giữa hai nhãn và quy định cách xử lý khi thiếu thông tin. Đánh giá trên bộ ticket chưa xuất hiện trong prompt; thêm ví dụ chỉ có ích khi kết quả đo thực sự tốt hơn.
+</p>
+<details>
+<summary>Câu hỏi đào sâu để tự luyện
+</summary>
+<p>Bạn sẽ chọn ví dụ nào nếu hai nhãn thường xuyên bị nhầm?
+</p>
+</details>
+</section>
+<section class="answer" id="question-2">
+<h2>Làm sao nhận JSON đáng tin cậy?
+</h2>
+<p>Ghi rõ schema, trường bắt buộc, kiểu dữ liệu và cách biểu diễn dữ liệu thiếu. Nếu backend hỗ trợ đầu ra ràng buộc theo schema, sử dụng tính năng đó. Sau khi nhận kết quả, ứng dụng vẫn cần kiểm tra schema và các quy tắc nghiệp vụ.
+</p>
+<h3>Đưa vào thực tế
+</h3>
+<p>JSON hợp lệ về cú pháp có thể sai về ý nghĩa: một mã đơn hàng có thể không tồn tại. Hãy kiểm tra quyền truy cập và sự tồn tại của bản ghi bằng hệ thống thật. Giới hạn số lần thử lại và có đường xử lý thất bại rõ ràng.
+</p>
+<details>
+<summary>Câu hỏi đào sâu để tự luyện
+</summary>
+<p>Nếu model trả JSON đúng schema nhưng sai mã khách hàng, bạn kiểm tra ở đâu?
+</p>
+</details>
+</section>
+<section class="answer" id="question-3">
+<h2>Vì sao prompt injection không thể chỉ sửa bằng câu chữ?
+</h2>
+<p>Prompt injection xuất hiện khi dữ liệu không tin cậy chứa chỉ dẫn cố thay đổi hành vi của model. Phân tách chỉ dẫn với dữ liệu giúp giảm nhầm lẫn nhưng không phải ranh giới bảo mật đủ mạnh.
+</p>
+<h3>Đưa vào thực tế
+</h3>
+<p>Nội dung từ trang web hoặc tài liệu chỉ được xem là dữ liệu. Backend phải giới hạn công cụ và quyền, xác thực tham số, bảo vệ bí mật và yêu cầu người dùng duyệt hành động có hậu quả lớn. Kiểm thử cả tài liệu chứa chỉ dẫn giả mạo, không chỉ prompt trực tiếp.
+</p>
+<details>
+<summary>Câu hỏi đào sâu để tự luyện
+</summary>
+<p>Nếu tài liệu yêu cầu agent gửi dữ liệu ra một URL lạ, lớp nào phải chặn?
+</p>
+</details>
+</section>
+<section class="takeaway">
+<h2>Cách luyện với bài này
+</h2>
+<p>Thử trả lời mỗi câu trong 60-90 giây trước khi đọc giải thích. Sau đó nêu một ví dụ, một đánh đổi và cách kiểm chứng lựa chọn của bạn. Dùng câu hỏi đào sâu để tìm phần mình chưa giải thích được.
+</p>
+</section>
+<div class="article-source">
+<h2>Nguồn tham khảo
+</h2>
+<p>Cấu trúc chủ đề tham khảo từ <a href="https://github.com/amitshekhariitbhu/ai-engineering-interview-questions">AI Engineering Interview Questions của Amit Shekhar</a>. Các phần giải thích và tình huống trên trang được viết mới, không sao chép các bài viết được liên kết trong repo.
+</p>
+</div><a class="next-post" href="rag-pipeline.html"><span>Đọc tiếp</span><strong>RAG: từ tài liệu đến câu trả lời có nguồn →</strong></a>
+</article>
+</div>
+</main>
+<footer><span>© 2026 Tu Duc Manh · mark.dev</span><a href="https://github.com/amitshekhariitbhu/ai-engineering-interview-questions">Kho câu hỏi tham khảo trên GitHub ↗</a>
+</footer>
+</body></html>

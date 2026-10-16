@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent cần nhiều hơn một vòng gọi LLM | mark.dev</title><meta name="description" content="Tool calling, điều kiện dừng và ranh giới an toàn cho hệ thống tự hành.">
+<meta name="theme-color" content="#0a0e1a"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0e1a'/%3E%3Ctext x='7' y='24' fill='%2360a5fa' font-family='monospace' font-size='24'%3EM%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="blog.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Đến nội dung chính</a>
+<header>
+<nav aria-label="Điều hướng chính"><a class="brand" href="../index.html"><span aria-hidden="true">&gt;</span> mark.dev<span class="cursor" aria-hidden="true"></span></a>
+<div class="nav-links"><a href="../index.html">Portfolio</a><a href="index.html" aria-current="page">Blog</a><span class="language">Tiếng Việt</span>
+</div>
+</nav>
+</header>
+<main id="main">
+<div class="breadcrumb"><a href="index.html">Blog</a><span aria-hidden="true">/</span><span>Agents</span>
+</div>
+<div class="article-heading">
+<div class="article-meta">Agents · 3 câu hỏi phỏng vấn · Tiếng Việt
+</div>
+<h1>Agent cần nhiều hơn một vòng gọi LLM
+</h1>
+<p class="intro">Tool calling, điều kiện dừng và ranh giới an toàn cho hệ thống tự hành.
+</p>
+</div>
+<div class="reading-layout">
+<aside class="toc" aria-label="Mục lục">
+<p>Trong bài này
+</p>
+<ol>
+<li><a href="#question-1">Agent khác một lần gọi LLM ở đâu?</a>
+</li>
+<li><a href="#question-2">Tool calling có tự thực thi hàm không?</a>
+</li>
+<li><a href="#question-3">Làm sao ngăn agent lặp vô hạn?</a>
+</li>
+</ol><a class="source-link" href="https://github.com/amitshekhariitbhu/ai-engineering-interview-questions#ai-agents-and-agentic-systems">Chủ đề trong repo gốc ↗</a>
+</aside>
+<article class="prose">
+<p class="editor-note">Bài giải thích được biên soạn cho blog này, dựa trên chủ đề câu hỏi của Amit Shekhar. Đây là tài liệu tự học, không phải bản dịch đáp án chính thức.
+</p>
+<section class="answer" id="question-1">
+<h2>Agent khác một lần gọi LLM ở đâu?
+</h2>
+<p>Một lần gọi LLM biến đầu vào thành đầu ra. Agent kết hợp model với trạng thái, công cụ và vòng điều khiển để thực hiện nhiều bước: chọn hành động, nhận kết quả, cập nhật trạng thái rồi quyết định bước tiếp theo.
+</p>
+<h3>Đưa vào thực tế
+</h3>
+<p>Chỉ dùng agent khi đường đi cần thay đổi theo dữ liệu nhận được. Nếu các bước đã cố định, workflow tường minh thường dễ kiểm thử hơn. Với tra cứu đơn hàng, công cụ trả dữ liệu thật; model có thể giải thích nhưng không được tự bịa trạng thái.
+</p>
+<details>
+<summary>Câu hỏi đào sâu để tự luyện
+</summary>
+<p>Khi nào bạn chọn workflow cố định thay cho agent?
+</p>
+</details>
+</section>
+<section class="answer" id="question-2">
+<h2>Tool calling có tự thực thi hàm không?
+</h2>
+<p>Model đề xuất tên công cụ và tham số có cấu trúc. Ứng dụng kiểm tra yêu cầu, thực thi hàm rồi gửi kết quả về model. Tool calling là giao diện yêu cầu hành động; quyền thực thi vẫn thuộc về ứng dụng.
+</p>
+<h3>Đưa vào thực tế
+</h3>
+<p>Định nghĩa schema rõ, chỉ cấp công cụ cần thiết và kiểm tra quyền ở backend. Với thao tác ghi, dùng cơ chế chống thực thi trùng khi retry. Một lời gọi hợp lệ về schema vẫn có thể sai nghiệp vụ hoặc vượt quyền người dùng.
+</p>
+<details>
+<summary>Câu hỏi đào sâu để tự luyện
+</summary>
+<p>Nếu mạng lỗi sau khi thanh toán thành công, retry có thể thu tiền hai lần không?
+</p>
+</details>
+</section>
+<section class="answer" id="question-3">
+<h2>Làm sao ngăn agent lặp vô hạn?
+</h2>
+<p>Đặt giới hạn số bước, thời gian, chi phí và số lần retry. Theo dõi các hành động lặp với cùng tham số và kết quả không tạo tiến triển. Khi chạm giới hạn, trả trạng thái chưa hoàn thành kèm thông tin đã xác minh.
+</p>
+<h3>Đưa vào thực tế
+</h3>
+<p>Ghi trace cho từng lần gọi model và công cụ để tìm vòng lặp. Phân biệt lỗi tạm thời có thể retry với lỗi quyền hoặc dữ liệu đầu vào cần dừng. Hành động không thể đảo ngược nên có bước duyệt trước khi thực hiện.
+</p>
+<details>
+<summary>Câu hỏi đào sâu để tự luyện
+</summary>
+<p>Nếu agent đổi câu chữ nhưng cứ gọi cùng một công cụ, bạn phát hiện ra sao?
+</p>
+</details>
+</section>
+<section class="takeaway">
+<h2>Cách luyện với bài này
+</h2>
+<p>Thử trả lời mỗi câu trong 60-90 giây trước khi đọc giải thích. Sau đó nêu một ví dụ, một đánh đổi và cách kiểm chứng lựa chọn của bạn. Dùng câu hỏi đào sâu để tìm phần mình chưa giải thích được.
+</p>
+</section>
+<div class="article-source">
+<h2>Nguồn tham khảo
+</h2>
+<p>Cấu trúc chủ đề tham khảo từ <a href="https://github.com/amitshekhariitbhu/ai-engineering-interview-questions">AI Engineering Interview Questions của Amit Shekhar</a>. Các phần giải thích và tình huống trên trang được viết mới, không sao chép các bài viết được liên kết trong repo.
+</p>
+</div><a class="next-post" href="fine-tuning.html"><span>Đọc tiếp</span><strong>Khi nào thực sự cần fine-tuning? →</strong></a>
+</article>
+</div>
+</main>
+<footer><span>© 2026 Tu Duc Manh · mark.dev</span><a href="https://github.com/amitshekhariitbhu/ai-engineering-interview-questions">Kho câu hỏi tham khảo trên GitHub ↗</a>
+</footer>
+</body></html>

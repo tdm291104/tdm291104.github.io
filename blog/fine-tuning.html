@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Khi nào thực sự cần fine-tuning? | mark.dev</title><meta name="description" content="Phân biệt kiến thức, hành vi và chi phí của việc thích nghi model.">
+<meta name="theme-color" content="#0a0e1a"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0e1a'/%3E%3Ctext x='7' y='24' fill='%2360a5fa' font-family='monospace' font-size='24'%3EM%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="blog.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Đến nội dung chính</a>
+<header>
+<nav aria-label="Điều hướng chính"><a class="brand" href="../index.html"><span aria-hidden="true">&gt;</span> mark.dev<span class="cursor" aria-hidden="true"></span></a>
+<div class="nav-links"><a href="../index.html">Portfolio</a><a href="index.html" aria-current="page">Blog</a><span class="language">Tiếng Việt</span>
+</div>
+</nav>
+</header>
+<main id="main">
+<div class="breadcrumb"><a href="index.html">Blog</a><span aria-hidden="true">/</span><span>Fine-tuning</span>
+</div>
+<div class="article-heading">
+<div class="article-meta">Fine-tuning · 3 câu hỏi phỏng vấn · Tiếng Việt
+</div>
+<h1>Khi nào thực sự cần fine-tuning?
+</h1>
+<p class="intro">Phân biệt kiến thức, hành vi và chi phí của việc thích nghi model.
+</p>
+</div>
+<div class="reading-layout">
+<aside class="toc" aria-label="Mục lục">
+<p>Trong bài này
+</p>
+<ol>
+<li><a href="#question-1">RAG hay fine-tuning cho dữ liệu nội bộ?</a>
+</li>
+<li><a href="#question-2">LoRA và QLoRA tiết kiệm bộ nhớ bằng cách nào?</a>
+</li>
+<li><a href="#question-3">Chuẩn bị dữ liệu và tránh đánh giá quá lạc quan thế nào?</a>
+</li>
+</ol><a class="source-link" href="https://github.com/amitshekhariitbhu/ai-engineering-interview-questions#fine-tuning-and-model-adaptation">Chủ đề trong repo gốc ↗</a>
+</aside>
+<article class="prose">
+<p class="editor-note">Bài giải thích được biên soạn cho blog này, dựa trên chủ đề câu hỏi của Amit Shekhar. Đây là tài liệu tự học, không phải bản dịch đáp án chính thức.
+</p>
+<section class="answer" id="question-1">
+<h2>RAG hay fine-tuning cho dữ liệu nội bộ?
+</h2>
+<p>RAG cung cấp bằng chứng tại thời điểm suy luận, phù hợp với dữ liệu cập nhật, cần nguồn trích dẫn hoặc có quyền truy cập riêng. Fine-tuning điều chỉnh tham số để cải thiện hành vi như định dạng, văn phong hoặc một nhiệm vụ chuyên biệt.
+</p>
+<h3>Đưa vào thực tế
+</h3>
+<p>Hai phương pháp có thể kết hợp. Với chính sách công ty thay đổi hàng tuần, bắt đầu bằng retrieval. Nếu model liên tục sai một kiểu phân loại dù có đủ thông tin và prompt đã được kiểm chứng, mới đánh giá fine-tuning trên dữ liệu gán nhãn phù hợp.
+</p>
+<details>
+<summary>Câu hỏi đào sâu để tự luyện
+</summary>
+<p>Vì sao fine-tuning không thay thế được cơ chế phân quyền tài liệu?
+</p>
+</details>
+</section>
+<section class="answer" id="question-2">
+<h2>LoRA và QLoRA tiết kiệm bộ nhớ bằng cách nào?
+</h2>
+<p>LoRA đóng băng trọng số nền và huấn luyện các ma trận hạng thấp biểu diễn phần cập nhật. Số tham số cần tối ưu giảm mạnh so với full fine-tuning. QLoRA kết hợp adapter với model nền lượng tử hóa, thường ở 4 bit, để giảm bộ nhớ lưu trọng số.
+</p>
+<h3>Đưa vào thực tế
+</h3>
+<p>GPU vẫn cần bộ nhớ cho activation, gradient của adapter và trạng thái optimizer. Context length, batch size và gradient checkpointing ảnh hưởng đáng kể đến khả năng huấn luyện. Không thể kết luận model vừa GPU chỉ từ dung lượng trọng số 4 bit.
+</p>
+<details>
+<summary>Câu hỏi đào sâu để tự luyện
+</summary>
+<p>Tại sao model load vừa VRAM nhưng vẫn hết bộ nhớ khi bắt đầu training?
+</p>
+</details>
+</section>
+<section class="answer" id="question-3">
+<h2>Chuẩn bị dữ liệu và tránh đánh giá quá lạc quan thế nào?
+</h2>
+<p>Dữ liệu phải phản ánh đầu vào production và đầu ra mong muốn. Loại mẫu lỗi, dữ liệu nhạy cảm không được phép dùng và các bản sao. Chia train, validation và test theo nguồn hoặc thời gian khi các mẫu có liên hệ với nhau.
+</p>
+<h3>Đưa vào thực tế
+</h3>
+<p>So sánh với model nền trên cùng bộ test giữ kín. Đo cả nhiệm vụ mục tiêu và năng lực cần giữ lại để phát hiện suy giảm. Chọn checkpoint bằng validation, không chọn dựa trên test; kiểm tra thủ công các kiểu lỗi nghiêm trọng trước khi phát hành.
+</p>
+<details>
+<summary>Câu hỏi đào sâu để tự luyện
+</summary>
+<p>Nếu hai biến thể của cùng một câu hỏi nằm ở train và test, kết quả bị lệch thế nào?
+</p>
+</details>
+</section>
+<section class="takeaway">
+<h2>Cách luyện với bài này
+</h2>
+<p>Thử trả lời mỗi câu trong 60-90 giây trước khi đọc giải thích. Sau đó nêu một ví dụ, một đánh đổi và cách kiểm chứng lựa chọn của bạn. Dùng câu hỏi đào sâu để tìm phần mình chưa giải thích được.
+</p>
+</section>
+<div class="article-source">
+<h2>Nguồn tham khảo
+</h2>
+<p>Cấu trúc chủ đề tham khảo từ <a href="https://github.com/amitshekhariitbhu/ai-engineering-interview-questions">AI Engineering Interview Questions của Amit Shekhar</a>. Các phần giải thích và tình huống trên trang được viết mới, không sao chép các bài viết được liên kết trong repo.
+</p>
+</div><a class="next-post" href="evaluation-production.html"><span>Đọc tiếp</span><strong>Đo chất lượng AI trước khi tối ưu →</strong></a>
+</article>
+</div>
+</main>
+<footer><span>© 2026 Tu Duc Manh · mark.dev</span><a href="https://github.com/amitshekhariitbhu/ai-engineering-interview-questions">Kho câu hỏi tham khảo trên GitHub ↗</a>
+</footer>
+</body></html>
